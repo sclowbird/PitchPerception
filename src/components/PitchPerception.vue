@@ -5,22 +5,22 @@
       variant="primary"
       text="Choose playlist"
       class="m-2"
-    ></b-dropdown>
+    >
+      <div v-for="(item, index) in playLists[0]" :key="index">
+        <b-dropdown-item href="#"> {{ item }}</b-dropdown-item>
+      </div>
+    </b-dropdown>
+
     <br />
     <br />
     <h2>Error? : {{ authenticationError }}</h2>
-
-    <h4>Playlists: {{ playLists }}</h4>
-    <br />
-    <br />
-    <h4>PlaylistTRACKSLOL1: {{ playListTracks }}</h4>
   </div>
 </template>
 
 <script>
 import router from "../router";
 import { dataFilter, getHashParams } from "../utils/utils";
-import * as EventService from "../services/EventService";
+import * as ES from "../services/EventService";
 export default {
   name: "PitchPerception",
   data() {
@@ -43,19 +43,16 @@ export default {
         this.authenticationError = "There was an error during authentication.";
       } else {
         localStorage.removeItem("spotify_auth_state");
-        this.initiateApiRequests(access_token);
+        this.getDataFromSpotify(access_token);
       }
     },
 
-    initiateApiRequests: function(accessToken) {
+    getDataFromSpotify: function(accessToken) {
       //this.getPlaylistTracks(accessToken, "3e7iOeG4lfW7AuMShGB9Gb");
       //this.getUserPlaylists(accessToken, "sclowbird");
       (async () => {
-        let user = await EventService.getUserData(accessToken);
-        let userPlaylists = await EventService.getUserPlaylists(
-          accessToken,
-          user
-        );
+        let user = await ES.getUserData(accessToken);
+        let userPlaylists = await ES.getUserPlaylists(accessToken, user);
         let playlistIdentifier = dataFilter(
           userPlaylists,
           "items",
