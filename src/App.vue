@@ -1,8 +1,6 @@
 <template>
   <div id="app">
     <img alt="Vue logo" src="./assets/logo.png" />
-    <PitchLanding msg="Welcome to Pitch Perception" />
-
     <router-view />
   </div>
 </template>
