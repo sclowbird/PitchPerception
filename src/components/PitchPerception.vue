@@ -1,8 +1,15 @@
 <template>
   <div>
+    <b-dropdown
+      id="playlist-selection"
+      variant="primary"
+      text="Choose playlist"
+      class="m-2"
+    ></b-dropdown>
+    <br />
+    <br />
     <h2>Error? : {{ authenticationError }}</h2>
-    <br />
-    <br />
+
     <h4>Playlists: {{ playLists }}</h4>
     <br />
     <br />
@@ -56,8 +63,13 @@ export default {
       (async () => {
         let user = await this.getUserData(accessToken);
         let userPlaylists = await this.getUserPlaylists(accessToken, user);
-        let playlistIds = dataFilter(userPlaylists, "items", "name");
-        this.playLists = playlistIds[0];
+        let playlistIdentifier = dataFilter(
+          userPlaylists,
+          "items",
+          "name",
+          "id"
+        );
+        this.playLists = playlistIdentifier;
       })();
     },
 
