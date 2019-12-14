@@ -20,3 +20,15 @@ export const initRequest = (accessToken, url) => {
 
   return r(requestConfig, url);
 };
+
+export const dataFilter = (response, wrapper, ...args) => {
+  let responseDataArray = [];
+  for (let i = 0; i < args.length; i++) {
+    let tempArr = [];
+    for (let j of response[wrapper]) {
+      tempArr.push(j[args[i]]);
+    }
+    responseDataArray.push(tempArr);
+  }
+  return responseDataArray;
+};
