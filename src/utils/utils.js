@@ -1,24 +1,12 @@
-// Initiate spotify web api request with specified url and accessToken
-export const initRequest = (accessToken, url) => {
-  const myHeaders = new Headers();
-  myHeaders.append("Authorization", "Bearer " + accessToken);
-  myHeaders.append("Content-Type", "application/json");
-
-  const requestConfig = {
-    method: "GET",
-    headers: myHeaders,
-    mode: "cors",
-    cache: "default"
-  };
-
-  async function r(requestConfig, url) {
-    const myRequest = new Request(url, requestConfig);
-    const response = await fetch(myRequest);
-    const result = await response.json();
-    return result;
+export const getHashParams = () => {
+  var hashParams = {};
+  var e,
+    r = /([^&;=]+)=?([^&;]*)/g,
+    q = window.location.hash.substring(2);
+  while ((e = r.exec(q))) {
+    hashParams[e[1]] = decodeURIComponent(e[2]);
   }
-
-  return r(requestConfig, url);
+  return hashParams;
 };
 
 export const dataFilter = (response, wrapper, ...args) => {
