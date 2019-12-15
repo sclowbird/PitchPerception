@@ -11,6 +11,15 @@
       </div>
     </b-dropdown>
 
+    <b-form-select
+      v-model="playlistSelection"
+      :options="playLists"
+      size="sm"
+      class="mt-3"
+    ></b-form-select>
+
+    <span> Selected playlist: {{ playlistSelection }}</span>
+
     <br />
     <br />
     <h2>Error? : {{ authenticationError }}</h2>
@@ -27,7 +36,8 @@ export default {
     return {
       authenticationError: "",
       playListTracks: {},
-      playLists: ""
+      playlistSelection: null,
+      playLists: {}
     };
   },
   created: function() {
@@ -53,14 +63,19 @@ export default {
       (async () => {
         let user = await ES.getUserData(accessToken);
         let userPlaylists = await ES.getUserPlaylists(accessToken, user);
-        let playlistIdentifier = dataFilter(
-          userPlaylists,
-          "items",
-          "name",
-          "id"
-        );
-        this.playLists = playlistIdentifier;
+        this.displayUserPlaylists(userPlaylists);
       })();
+    },
+
+    displayUserPlaylists: function(userPlaylists) {
+      let playlistIdentifier = dataFilter(userPlaylists, "items", "name", "id");
+      let playlistName = playlistIdentifier[0];
+      let playlistId = playlistIdentifier[1];
+      let playlistObject = {};
+      playlistId.forEach(
+        (element, index) => (playlistObject[element] = playlistName[index])
+      );
+      this.playLists = playlistObject;
     }
   }
 };

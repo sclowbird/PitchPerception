@@ -1,4 +1,6 @@
 // Initiate spotify web api request with specified url and accessToken
+import { dataFilter } from "../utils/utils";
+
 export const initRequest = (accessToken, url) => {
   const myHeaders = new Headers();
   myHeaders.append("Authorization", "Bearer " + accessToken);
@@ -36,6 +38,7 @@ export const getUserPlaylists = (accessToken, userId) => {
     let response = await initRequest(accessToken, url);
     return response;
   }
+
   return res();
 };
 
