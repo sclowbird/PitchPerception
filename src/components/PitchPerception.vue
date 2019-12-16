@@ -1,21 +1,11 @@
 <template>
   <div>
-    <b-dropdown
-      id="playlist-selection"
-      variant="primary"
-      text="Choose playlist"
-      class="m-2"
-    >
-      <div v-for="(item, index) in playLists[0]" :key="index">
-        <b-dropdown-item href="#"> {{ item }}</b-dropdown-item>
-      </div>
-    </b-dropdown>
-
     <b-form-select
       v-model="playlistSelection"
       :options="playLists"
       size="sm"
-      class="mt-3"
+      class="mb-3"
+      @change="getPlaylistTrackIds"
     ></b-form-select>
 
     <span> Selected playlist: {{ playlistSelection }}</span>
@@ -37,7 +27,8 @@ export default {
       authenticationError: "",
       playListTracks: {},
       playlistSelection: null,
-      playLists: {}
+      playLists: {},
+      oAuthToken: ""
     };
   },
   created: function() {
@@ -52,30 +43,43 @@ export default {
       if (access_token && (state == null || state !== storedState)) {
         this.authenticationError = "There was an error during authentication.";
       } else {
+        this.oAuthToken = access_token;
         localStorage.removeItem("spotify_auth_state");
         this.getDataFromSpotify(access_token);
       }
     },
 
-    getDataFromSpotify: function(accessToken) {
-      //this.getPlaylistTracks(accessToken, "3e7iOeG4lfW7AuMShGB9Gb");
-      //this.getUserPlaylists(accessToken, "sclowbird");
+    getDataFromSpotify: function() {
       (async () => {
-        let user = await ES.getUserData(accessToken);
-        let userPlaylists = await ES.getUserPlaylists(accessToken, user);
-        this.displayUserPlaylists(userPlaylists);
+        let user = await ES.getUserData(this.oAuthToken);
+        let userPlaylists = await ES.getUserPlaylists(this.oAuthToken, user);
+        this.getPlaylistSelection(userPlaylists);
       })();
     },
 
-    displayUserPlaylists: function(userPlaylists) {
+    getPlaylistSelection: function(userPlaylists) {
       let playlistIdentifier = dataFilter(userPlaylists, "items", "name", "id");
       let playlistName = playlistIdentifier[0];
       let playlistId = playlistIdentifier[1];
       let playlistObject = {};
+
       playlistId.forEach(
         (element, index) => (playlistObject[element] = playlistName[index])
       );
       this.playLists = playlistObject;
+    },
+
+    getPlaylistTrackIds: function() {
+      console.log("change");
+      (async () => {
+        if (this.playlistSelection !== null) {
+          let getTracks = await ES.getPlaylistTracks(
+            this.oAuthToken,
+            this.playlistSelection
+          );
+          console.log(getTracks);
+        }
+      })();
     }
   }
 };
