@@ -90,9 +90,36 @@ export default {
     getTracksAudioFeatures: function(playlistTrackIds) {
       (async () => {
         let tracks = await playlistTrackIds;
-        let audioFeatures = await ES.getAudioFeatures(this.oAuthToken, tracks);
-        console.log(audioFeatures);
+        let tracksAudioFeatures = await ES.getAudioFeatures(
+          this.oAuthToken,
+          tracks
+        );
+        this.getPlaylistAudioFeatures(tracksAudioFeatures);
       })();
+    },
+
+    getPlaylistAudioFeatures: function(tracksAudioFeatures) {
+      let af = {
+        danceability: [],
+        energy: [],
+        loudness: [],
+        speechiness: [],
+        acousticness: [],
+        liveness: [],
+        valence: [],
+        tempo: [],
+        duration_ms: []
+      };
+
+      let afKeys = Object.keys(af);
+
+      let j = 0;
+      for (let i in af) {
+        af[afKeys[j]] = dataFilter(tracksAudioFeatures, "audio_features", i);
+        j += 1;
+      }
+
+      console.log(af);
     }
   }
 };
