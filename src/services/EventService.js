@@ -52,3 +52,6 @@ export const getPlaylistTracks = (accessToken, playlistId) => {
   }
   return res();
 };
+
+// Gets audio features of several tracks
+export const getAudioFeatures = () => {};

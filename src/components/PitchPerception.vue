@@ -5,7 +5,7 @@
       :options="playLists"
       size="sm"
       class="mb-3"
-      @change="getPlaylistTrackIds"
+      v-on:change="getPlaylistTrackIds"
     ></b-form-select>
 
     <span> Selected playlist: {{ playlistSelection }}</span>
@@ -69,22 +69,29 @@ export default {
       this.playLists = playlistObject;
     },
 
+    // Assigns ids from all tracks of the selected playlist to an array.
     getPlaylistTrackIds: function() {
-      let playlistTrackIds = [];
       (async () => {
+        let playlistTrackIds = [];
         if (this.playlistSelection !== null) {
           let getTracks = await ES.getPlaylistTracks(
             this.oAuthToken,
             this.playlistSelection
           );
-          // returns array with list of tracks
           let trackfilter = dataFilter(getTracks, "items", "track");
           for (let i = 0; i < trackfilter[0].length; i++) {
             playlistTrackIds.push(trackfilter[0][i].id);
           }
+          this.getTracksAudioFeatures(playlistTrackIds);
         }
       })();
-      console.log(playlistTrackIds);
+    },
+
+    getTracksAudioFeatures: function(playlistTrackIds) {
+      (async () => {
+        let tracks = await playlistTrackIds;
+        console.log(tracks);
+      })();
     }
   }
 };
