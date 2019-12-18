@@ -70,16 +70,21 @@ export default {
     },
 
     getPlaylistTrackIds: function() {
-      console.log("change");
+      let playlistTrackIds = [];
       (async () => {
         if (this.playlistSelection !== null) {
           let getTracks = await ES.getPlaylistTracks(
             this.oAuthToken,
             this.playlistSelection
           );
-          console.log(getTracks);
+          // returns array with list of tracks
+          let trackfilter = dataFilter(getTracks, "items", "track");
+          for (let i = 0; i < trackfilter[0].length; i++) {
+            playlistTrackIds.push(trackfilter[0][i].id);
+          }
         }
       })();
+      console.log(playlistTrackIds);
     }
   }
 };
