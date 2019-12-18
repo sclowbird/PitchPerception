@@ -90,7 +90,8 @@ export default {
     getTracksAudioFeatures: function(playlistTrackIds) {
       (async () => {
         let tracks = await playlistTrackIds;
-        console.log(tracks);
+        let audioFeatures = await ES.getAudioFeatures(this.oAuthToken, tracks);
+        console.log(audioFeatures);
       })();
     }
   }

@@ -1,6 +1,4 @@
 // Initiate spotify web api request with specified url and accessToken
-import { dataFilter } from "../utils/utils";
-
 export const initRequest = (accessToken, url) => {
   const myHeaders = new Headers();
   myHeaders.append("Authorization", "Bearer " + accessToken);
@@ -54,4 +52,23 @@ export const getPlaylistTracks = (accessToken, playlistId) => {
 };
 
 // Gets audio features of several tracks
-export const getAudioFeatures = () => {};
+export const getAudioFeatures = (accessToken, trackIds) => {
+  let fields = "";
+  for (let i = 0; i < trackIds.length; i++) {
+    if (i === trackIds.length - 1) {
+      fields += trackIds[i];
+    } else {
+      fields += trackIds[i] + ",";
+    }
+  }
+
+  let url = "https://api.spotify.com/v1/audio-features";
+  url += "?ids=" + encodeURIComponent(fields);
+
+  async function res() {
+    let response = await initRequest(accessToken, url);
+    return response;
+  }
+
+  return res();
+};
