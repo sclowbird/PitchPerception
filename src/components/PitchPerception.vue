@@ -8,9 +8,10 @@
       v-on:change="getPlaylistTrackIds"
     ></b-form-select>
 
-    <span> Selected playlist: {{ playlistSelection }}</span>
+    <span>Selected playlist: {{ playlistSelection }}</span>
 
     <br />
+    <h2>audioFeatures? : {{ audioFeatures }}</h2>
     <br />
     <h2>Error? : {{ authenticationError }}</h2>
   </div>
@@ -28,6 +29,7 @@ export default {
       playListTracks: {},
       playlistSelection: null,
       playLists: {},
+      audioFeatures: {},
       oAuthToken: ""
     };
   },
@@ -79,6 +81,8 @@ export default {
             this.playlistSelection
           );
           let trackfilter = dataFilter(getTracks, "items", "track");
+          //TODO: BUG detected "Cannot read property "id" of null
+          // when choosing playlist "Release Radar"
           for (let i = 0; i < trackfilter[0].length; i++) {
             playlistTrackIds.push(trackfilter[0][i].id);
           }
@@ -94,11 +98,11 @@ export default {
           this.oAuthToken,
           tracks
         );
-        this.getPlaylistAudioFeatures(tracksAudioFeatures);
+        this.playlistAudioFeatures(tracksAudioFeatures);
       })();
     },
 
-    getPlaylistAudioFeatures: function(tracksAudioFeatures) {
+    playlistAudioFeatures: function(tracksAudioFeatures) {
       let af = {
         danceability: [],
         energy: [],
@@ -118,8 +122,25 @@ export default {
         af[afKeys[j]] = dataFilter(tracksAudioFeatures, "audio_features", i);
         j += 1;
       }
+      debugger;
+      this.audioFeatures = this.averageAudioFeatures(af);
+    },
 
-      console.log(af);
+    // Calculate average of all audiofeatures
+    // so it is represented in the following format
+    // audiofeature (string) : averagevalue (float)
+    // eg: "energy" : 0.871
+    averageAudioFeatures: function(af) {
+      const reducer = (accumulator, currentValue) => accumulator + currentValue;
+      let afKeys = Object.keys(af);
+      let j = 0;
+      for (let i in af) {
+        af[afKeys[j]] =
+          af[afKeys[j]][0].reduce(reducer) / af[afKeys[j]][0].length;
+        j += 1;
+      }
+
+      return af;
     }
   }
 };
