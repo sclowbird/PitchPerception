@@ -64,7 +64,7 @@ export default {
       let playlistName = playlistIdentifier[0];
       let playlistId = playlistIdentifier[1];
       let playlistObject = {};
-
+      playlistName.sort();
       playlistId.forEach(
         (element, index) => (playlistObject[element] = playlistName[index])
       );
