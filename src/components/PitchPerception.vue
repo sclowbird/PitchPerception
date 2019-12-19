@@ -11,7 +11,7 @@
     <span>Selected playlist: {{ playlistSelection }}</span>
 
     <br />
-    <h2>audioFeatures? : {{ audioFeatures }}</h2>
+    <h5>audioFeatures? : {{ audioFeatures }}</h5>
     <br />
     <h2>Error? : {{ authenticationError }}</h2>
   </div>
@@ -81,10 +81,12 @@ export default {
             this.playlistSelection
           );
           let trackfilter = dataFilter(getTracks, "items", "track");
-          //TODO: BUG detected "Cannot read property "id" of null
-          // when choosing playlist "Release Radar"
           for (let i = 0; i < trackfilter[0].length; i++) {
-            playlistTrackIds.push(trackfilter[0][i].id);
+            if (trackfilter[0][i] !== null) {
+              playlistTrackIds.push(trackfilter[0][i].id);
+            } else {
+              continue;
+            }
           }
           this.getTracksAudioFeatures(playlistTrackIds);
         }
@@ -98,6 +100,7 @@ export default {
           this.oAuthToken,
           tracks
         );
+
         this.playlistAudioFeatures(tracksAudioFeatures);
       })();
     },
@@ -122,7 +125,7 @@ export default {
         af[afKeys[j]] = dataFilter(tracksAudioFeatures, "audio_features", i);
         j += 1;
       }
-      debugger;
+
       this.audioFeatures = this.averageAudioFeatures(af);
     },
 

@@ -14,7 +14,11 @@ export const dataFilter = (response, wrapper, ...args) => {
   for (let i = 0; i < args.length; i++) {
     let tempArr = [];
     for (let j of response[wrapper]) {
-      tempArr.push(j[args[i]]);
+      if (j !== null) {
+        tempArr.push(j[args[i]]);
+      } else {
+        continue;
+      }
     }
     responseDataArray.push(tempArr);
   }
