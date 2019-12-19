@@ -31,7 +31,9 @@ export const getUserData = accessToken => {
 };
 
 export const getUserPlaylists = (accessToken, userId) => {
+  const limit = 50;
   let url = `https://api.spotify.com/v1/users/${userId}/playlists`;
+  url += "?limit=" + encodeURIComponent(limit);
   async function res() {
     let response = await initRequest(accessToken, url);
     return response;
