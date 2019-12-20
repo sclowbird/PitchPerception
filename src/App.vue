@@ -1,6 +1,11 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png" />
+    <img
+      style="width:50%; margin:0 auto;"
+      alt="Vue logo"
+      src="./assets/Logo2_PitchPerception.svg"
+    />
+    <svg></svg>
     <router-view />
   </div>
 </template>

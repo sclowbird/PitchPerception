@@ -9,8 +9,23 @@
     ></b-form-select>
 
     <span>Selected playlist: {{ playlistSelection }}</span>
-
     <br />
+    <div style="width:60%; margin:0 auto;">
+      <bars
+        :data="[
+          { value: 0.4529333333333334, title: 'danceability' },
+          { value: 0.7554000000000001, title: 'energy' },
+          { value: 0.08188666666666669, title: 'speechiness' },
+          { value: 0.038324555333333336, title: 'acousticness' },
+          { value: 0.20614333333333335, title: 'liveness' },
+          { value: 0.3808133333333334, title: 'valence' }
+        ]"
+        :gradient="['#6fa8dc', '#42b983']"
+        :barWidth="50"
+        :growDuration="1"
+      >
+      </bars>
+    </div>
     <h5>audioFeatures? : {{ audioFeatures }}</h5>
     <br />
     <h2>Error? : {{ authenticationError }}</h2>
