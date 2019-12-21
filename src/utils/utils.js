@@ -9,6 +9,11 @@ export const getHashParams = () => {
   return hashParams;
 };
 
+export const round = (value, precision) => {
+  let multiplier = Math.pow(10, precision || 0);
+  return Math.round(value * multiplier) / multiplier;
+};
+
 export const dataFilter = (response, wrapper, ...args) => {
   let responseDataArray = [];
   for (let i = 0; i < args.length; i++) {

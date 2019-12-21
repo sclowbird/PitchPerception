@@ -1,6 +1,7 @@
 <template>
   <div>
     <b-form-select
+      style="width:40%; margin:0 auto;"
       v-model="playlistSelection"
       :options="playLists"
       size="sm"
@@ -10,7 +11,7 @@
 
     <span>Selected playlist: {{ playlistSelection }}</span>
     <br />
-    <div style="width:60%; margin:0 auto;">
+    <div v-if="audioFeatures.length > 0" style="width:40%; margin:0 auto;">
       <bars
         :data="audioFeatures"
         :gradient="['#6fa8dc', '#42b983']"
@@ -27,7 +28,7 @@
 
 <script>
 import router from "../router";
-import { dataFilter, getHashParams } from "../utils/utils";
+import { dataFilter, getHashParams, round } from "../utils/utils";
 import * as ES from "../services/EventService";
 export default {
   name: "PitchPerception",
@@ -81,6 +82,7 @@ export default {
 
     // Assigns ids from all tracks of the selected playlist to an array.
     getPlaylistTrackIds: function() {
+      this.audioFeatures = [];
       (async () => {
         let playlistTrackIds = [];
         if (this.playlistSelection !== null) {
@@ -140,8 +142,12 @@ export default {
     // eg: "energy" : 0.871
     averageAudioFeatures: function(af) {
       const reducer = (accumulator, currentValue) => accumulator + currentValue;
+
       for (let i = 0; i < af.length; i++) {
+        length = af[i].value[0].length;
         af[i].value = af[i].value[0].reduce(reducer);
+        af[i].value /= length;
+        af[i].title += " " + round(af[i].value, 2);
       }
       return af;
     }
