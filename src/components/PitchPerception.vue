@@ -149,6 +149,8 @@ export default {
         af[i].value /= length;
         af[i].title += " " + round(af[i].value, 2);
       }
+
+      af.unshift({ value: [1], title: "Y-Max-Value = 1" });
       return af;
     }
   }
