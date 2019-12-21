@@ -15,7 +15,7 @@
       <bars
         :data="audioFeatures"
         :gradient="['#6fa8dc', '#42b983']"
-        :barWidth="50"
+        :barWidth="40"
         :growDuration="1"
       >
       </bars>
@@ -150,6 +150,7 @@ export default {
         af[i].title += " " + round(af[i].value, 2);
       }
 
+      // Adds Y-Axis to Bar Chart
       af.unshift({ value: [1], title: "Y-Max-Value = 1" });
       return af;
     }
