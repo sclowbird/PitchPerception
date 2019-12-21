@@ -12,14 +12,7 @@
     <br />
     <div style="width:60%; margin:0 auto;">
       <bars
-        :data="[
-          { value: 0.4529333333333334, title: 'danceability' },
-          { value: 0.7554000000000001, title: 'energy' },
-          { value: 0.08188666666666669, title: 'speechiness' },
-          { value: 0.038324555333333336, title: 'acousticness' },
-          { value: 0.20614333333333335, title: 'liveness' },
-          { value: 0.3808133333333334, title: 'valence' }
-        ]"
+        :data="audioFeatures"
         :gradient="['#6fa8dc', '#42b983']"
         :barWidth="50"
         :growDuration="1"
@@ -44,7 +37,7 @@ export default {
       playListTracks: {},
       playlistSelection: null,
       playLists: {},
-      audioFeatures: {},
+      audioFeatures: [],
       oAuthToken: ""
     };
   },
@@ -121,24 +114,21 @@ export default {
     },
 
     playlistAudioFeatures: function(tracksAudioFeatures) {
-      let af = {
-        danceability: [],
-        energy: [],
-        loudness: [],
-        speechiness: [],
-        acousticness: [],
-        liveness: [],
-        valence: [],
-        tempo: [],
-        duration_ms: []
-      };
+      let af = [
+        { value: [], title: "danceability" },
+        { value: [], title: "energy" },
+        { value: [], title: "speechiness" },
+        { value: [], title: "acousticness" },
+        { value: [], title: "liveness" },
+        { value: [], title: "valence" }
+      ];
 
-      let afKeys = Object.keys(af);
-
-      let j = 0;
-      for (let i in af) {
-        af[afKeys[j]] = dataFilter(tracksAudioFeatures, "audio_features", i);
-        j += 1;
+      for (let i = 0; i < af.length; i++) {
+        af[i].value = dataFilter(
+          tracksAudioFeatures,
+          "audio_features",
+          af[i].title
+        );
       }
 
       this.audioFeatures = this.averageAudioFeatures(af);
@@ -150,14 +140,9 @@ export default {
     // eg: "energy" : 0.871
     averageAudioFeatures: function(af) {
       const reducer = (accumulator, currentValue) => accumulator + currentValue;
-      let afKeys = Object.keys(af);
-      let j = 0;
-      for (let i in af) {
-        af[afKeys[j]] =
-          af[afKeys[j]][0].reduce(reducer) / af[afKeys[j]][0].length;
-        j += 1;
+      for (let i = 0; i < af.length; i++) {
+        af[i].value = af[i].value[0].reduce(reducer);
       }
-
       return af;
     }
   }
