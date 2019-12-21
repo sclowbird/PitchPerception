@@ -8,19 +8,33 @@
       class="mb-3"
       v-on:change="getPlaylistTrackIds"
     ></b-form-select>
-
-    <span>Selected playlist: {{ playlistSelection }}</span>
     <br />
     <div v-if="audioFeatures.length > 0" style="width:40%; margin:0 auto;">
+      <b-form-select
+        v-model="selectedAf"
+        size="sm"
+        class="mb-3"
+      ></b-form-select>
+
+      <trend
+        :data="audioFeatures[0].value[0]"
+        :gradient="['#6fa8dc', '#42b983', '#2c3e50']"
+        auto-draw
+        smooth
+      >
+      </trend>
+    </div>
+    <br />
+    <div v-if="averageAf.length > 0" style="width:40%; margin:0 auto;">
       <bars
-        :data="audioFeatures"
+        :data="averageAf"
         :gradient="['#6fa8dc', '#42b983']"
         :barWidth="40"
         :growDuration="1"
       >
       </bars>
     </div>
-    <h5>audioFeatures? : {{ audioFeatures }}</h5>
+    <br />
     <br />
     <h2>Error? : {{ authenticationError }}</h2>
   </div>
@@ -28,7 +42,12 @@
 
 <script>
 import router from "../router";
-import { dataFilter, getHashParams, round } from "../utils/utils";
+import {
+  dataFilter,
+  dataFilterAsync,
+  getHashParams,
+  round
+} from "../utils/utils";
 import * as ES from "../services/EventService";
 export default {
   name: "PitchPerception",
@@ -39,6 +58,9 @@ export default {
       playlistSelection: null,
       playLists: {},
       audioFeatures: [],
+      afCopy: [],
+      averageAf: [],
+      selectedAf: [],
       oAuthToken: ""
     };
   },
@@ -82,7 +104,7 @@ export default {
 
     // Assigns ids from all tracks of the selected playlist to an array.
     getPlaylistTrackIds: function() {
-      this.audioFeatures = [];
+      this.averageAf = [];
       (async () => {
         let playlistTrackIds = [];
         if (this.playlistSelection !== null) {
@@ -116,33 +138,35 @@ export default {
     },
 
     playlistAudioFeatures: function(tracksAudioFeatures) {
-      let af = [
-        { value: [], title: "danceability" },
-        { value: [], title: "energy" },
-        { value: [], title: "speechiness" },
-        { value: [], title: "acousticness" },
-        { value: [], title: "liveness" },
-        { value: [], title: "valence" }
-      ];
-
-      for (let i = 0; i < af.length; i++) {
-        af[i].value = dataFilter(
-          tracksAudioFeatures,
-          "audio_features",
-          af[i].title
-        );
+      async function a(features) {
+        let af = [
+          { value: [], title: "danceability" },
+          { value: [], title: "energy" },
+          { value: [], title: "speechiness" },
+          { value: [], title: "acousticness" },
+          { value: [], title: "liveness" },
+          { value: [], title: "valence" }
+        ];
+        for (let i = 0; i < af.length; i++) {
+          af[i].value = await dataFilterAsync(
+            features,
+            "audio_features",
+            af[i].title
+          );
+        }
+        return af;
       }
 
-      this.audioFeatures = this.averageAudioFeatures(af);
+      (async () => {
+        this.audioFeatures = await a(tracksAudioFeatures);
+        this.afCopy = await a(tracksAudioFeatures);
+        this.averageAf = this.averageAudioFeatures(this.afCopy);
+      })();
     },
 
     // Calculate average of all audiofeatures
-    // so it is represented in the following format
-    // audiofeature (string) : averagevalue (float)
-    // eg: "energy" : 0.871
     averageAudioFeatures: function(af) {
       const reducer = (accumulator, currentValue) => accumulator + currentValue;
-
       for (let i = 0; i < af.length; i++) {
         length = af[i].value[0].length;
         af[i].value = af[i].value[0].reduce(reducer);
