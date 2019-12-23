@@ -10,31 +10,23 @@
     ></b-form-select>
     <br />
     <div v-if="audioFeatures.length > 0" style="width:40%; margin:0 auto;">
-      <b-form-select
-        v-model="selectedAf"
-        size="sm"
-        class="mb-3"
-      ></b-form-select>
+      <b-form-select v-model="selectedAf" :options="allFeatures" size="sm" class="mb-3"></b-form-select>
 
       <trend
-        :data="audioFeatures[0].value[0]"
+        v-if="selectedAf !== null"
+        :data="audioFeatures[selectedAf].value[0]"
         :gradient="['#6fa8dc', '#42b983', '#2c3e50']"
         auto-draw
         smooth
-      >
-      </trend>
+      ></trend>
     </div>
     <br />
     <div v-if="averageAf.length > 0" style="width:40%; margin:0 auto;">
-      <bars
-        :data="averageAf"
-        :gradient="['#6fa8dc', '#42b983']"
-        :barWidth="40"
-        :growDuration="1"
-      >
-      </bars>
+      <bars :data="averageAf" :gradient="['#6fa8dc', '#42b983']" :barWidth="40" :growDuration="1"></bars>
     </div>
     <br />
+    <br />
+
     <br />
     <h2>Error? : {{ authenticationError }}</h2>
   </div>
@@ -60,8 +52,16 @@ export default {
       audioFeatures: [],
       afCopy: [],
       averageAf: [],
-      selectedAf: [],
-      oAuthToken: ""
+      selectedAf: null,
+      oAuthToken: "",
+      allFeatures: {
+        0: "danceability",
+        1: "energy",
+        2: "speechiness",
+        3: "acousticness",
+        4: "liveness",
+        5: "valence"
+      }
     };
   },
   created: function() {
@@ -95,7 +95,7 @@ export default {
       let playlistName = playlistIdentifier[0];
       let playlistId = playlistIdentifier[1];
       let playlistObject = {};
-      playlistName.sort();
+      //playlistName.sort();
       playlistId.forEach(
         (element, index) => (playlistObject[element] = playlistName[index])
       );
@@ -132,7 +132,6 @@ export default {
           this.oAuthToken,
           tracks
         );
-
         this.playlistAudioFeatures(tracksAudioFeatures);
       })();
     },

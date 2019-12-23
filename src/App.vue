@@ -5,7 +5,6 @@
       alt="Vue logo"
       src="./assets/Logo2_PitchPerception.svg"
     />
-    <svg></svg>
     <router-view />
   </div>
 </template>

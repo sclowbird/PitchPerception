@@ -63,7 +63,6 @@ export const getAudioFeatures = (accessToken, trackIds) => {
       fields += trackIds[i] + ",";
     }
   }
-
   let url = "https://api.spotify.com/v1/audio-features";
   url += "?ids=" + encodeURIComponent(fields);
 

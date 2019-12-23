@@ -43,5 +43,6 @@ export async function dataFilterAsync(response, wrapper, ...args) {
     }
     responseDataArray.push(tempArr);
   }
+
   return responseDataArray;
 }
