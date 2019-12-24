@@ -1,7 +1,6 @@
 <template>
-  <div>
+  <div style="width:70%; margin:0 auto;">
     <b-form-select
-      style="width:40%; margin:0 auto;"
       v-model="playlistSelection"
       :options="playLists"
       size="sm"
@@ -13,7 +12,7 @@
       </template>
     </b-form-select>
     <br />
-    <div v-if="audioFeatures.length > 0" style="width:40%; margin:0 auto;">
+    <div v-if="audioFeatures.length > 0">
       <b-form-select v-model="selectedAf" :options="featureDropDown" size="sm" class="mb-3">
         <template v-slot:first>
           <option :value="null" disabled>Please select an audio feature</option>
@@ -28,7 +27,7 @@
       ></trend>
     </div>
     <br />
-    <div v-if="averageAf.length > 0" style="width:40%; margin:0 auto;">
+    <div v-if="averageAf.length > 0">
       <bars :data="averageAf" :gradient="['#6fa8dc', '#42b983']" :barWidth="40" :growDuration="1"></bars>
     </div>
     <br />
