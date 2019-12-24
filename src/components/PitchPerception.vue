@@ -10,7 +10,7 @@
     ></b-form-select>
     <br />
     <div v-if="audioFeatures.length > 0" style="width:40%; margin:0 auto;">
-      <b-form-select v-model="selectedAf" :options="allFeatures" size="sm" class="mb-3"></b-form-select>
+      <b-form-select v-model="selectedAf" :options="featureDropDown" size="sm" class="mb-3"></b-form-select>
       <trend
         v-if="selectedAf !== null"
         :data="audioFeatures[selectedAf].value[0]"
@@ -32,33 +32,26 @@
 
 <script>
 import router from "../router";
+import { dataFilter, getHashParams, round } from "../utils/utils";
 import {
-  dataFilter,
-  dataFilterAsync,
-  getHashParams,
-  round
-} from "../utils/utils";
+  featureSelection,
+  availableAudioFeatures
+} from "../utils/audioFeatureObjects";
 import * as ES from "../services/EventService";
 export default {
   name: "PitchPerception",
   data() {
     return {
+      oAuthToken: "",
       authenticationError: "",
+      playLists: {},
       playListTracks: {},
       playlistSelection: null,
-      playLists: {},
+      allAudioFeatures: availableAudioFeatures,
+      featureDropDown: featureSelection,
       audioFeatures: [],
       averageAf: [],
-      selectedAf: null,
-      oAuthToken: "",
-      allFeatures: {
-        0: "danceability",
-        1: "energy",
-        2: "speechiness",
-        3: "acousticness",
-        4: "liveness",
-        5: "valence"
-      }
+      selectedAf: null
     };
   },
   created: function() {
@@ -144,14 +137,7 @@ export default {
     },
 
     playlistAudioFeatures: function(tracksAudioFeatures) {
-      let af = [
-        { value: [], title: "danceability" },
-        { value: [], title: "energy" },
-        { value: [], title: "speechiness" },
-        { value: [], title: "acousticness" },
-        { value: [], title: "liveness" },
-        { value: [], title: "valence" }
-      ];
+      let af = this.allAudioFeatures;
       for (let i = 0; i < af.length; i++) {
         af[i].value = dataFilter(
           tracksAudioFeatures,
@@ -161,24 +147,30 @@ export default {
       }
 
       this.audioFeatures = af;
-
-      //create a deep copy of audioFeatures array
-      let audioFeaturesCopy = JSON.parse(JSON.stringify(this.audioFeatures));
-      this.averageAf = this.displayAverageAudioFeatures(audioFeaturesCopy);
+      this.displayAverageAudioFeatures();
     },
 
     // Calculate average of all audiofeatures
-    displayAverageAudioFeatures: function(af) {
+    displayAverageAudioFeatures: function() {
+      //create a deep copy of audioFeatures array
+      let copyAf = JSON.parse(JSON.stringify(this.audioFeatures));
+
+      // display average features for: danceability, energy, speechiness, acousticness, liveness, valence
+      let displayAverageAf = [];
+      for (let i = 0; i < 6; i++) {
+        displayAverageAf.push(copyAf[i]);
+      }
+
       const reducer = (accumulator, currentValue) => accumulator + currentValue;
-      for (let i = 0; i < af.length; i++) {
-        length = af[i].value[0].length;
-        af[i].value = af[i].value[0].reduce(reducer);
-        af[i].value /= length;
-        af[i].title += " " + round(af[i].value, 2);
+      for (let i = 0; i < displayAverageAf.length; i++) {
+        length = displayAverageAf[i].value[0].length;
+        displayAverageAf[i].value =
+          displayAverageAf[i].value[0].reduce(reducer) / length;
+        displayAverageAf[i].title += " " + round(displayAverageAf[i].value, 2);
       }
       // Adds Y-Axis to Bar Chart
-      af.unshift({ value: [1], title: "Y-Max-Value = 1" });
-      return af;
+      displayAverageAf.unshift({ value: [1], title: "Y-Max-Value = 1" });
+      this.averageAf = displayAverageAf;
     }
   }
 };
