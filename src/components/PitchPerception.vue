@@ -47,9 +47,8 @@ export default {
       playLists: {},
       playListTracks: {},
       playlistSelection: null,
-      allAudioFeatures: availableAudioFeatures,
-      featureDropDown: featureSelection,
       audioFeatures: [],
+      featureDropDown: featureSelection,
       averageAf: [],
       selectedAf: null
     };
@@ -137,7 +136,7 @@ export default {
     },
 
     playlistAudioFeatures: function(tracksAudioFeatures) {
-      let af = this.allAudioFeatures;
+      let af = availableAudioFeatures;
       for (let i = 0; i < af.length; i++) {
         af[i].value = dataFilter(
           tracksAudioFeatures,
@@ -150,9 +149,9 @@ export default {
       this.displayAverageAudioFeatures();
     },
 
-    // Calculate average of all audiofeatures
+    // Calculate average of all audiofeatures and provide neccessary data for bar charts
     displayAverageAudioFeatures: function() {
-      //create a deep copy of audioFeatures array
+      // create a deep copy of audioFeatures array
       let copyAf = JSON.parse(JSON.stringify(this.audioFeatures));
 
       // display average features for: danceability, energy, speechiness, acousticness, liveness, valence
@@ -161,6 +160,7 @@ export default {
         displayAverageAf.push(copyAf[i]);
       }
 
+      // calculate the average for every audio feature
       const reducer = (accumulator, currentValue) => accumulator + currentValue;
       for (let i = 0; i < displayAverageAf.length; i++) {
         length = displayAverageAf[i].value[0].length;
@@ -168,8 +168,11 @@ export default {
           displayAverageAf[i].value[0].reduce(reducer) / length;
         displayAverageAf[i].title += " " + round(displayAverageAf[i].value, 2);
       }
+
       // Adds Y-Axis to Bar Chart
       displayAverageAf.unshift({ value: [1], title: "Y-Max-Value = 1" });
+
+      // provide data needed for visualization of bar chart
       this.averageAf = displayAverageAf;
     }
   }
