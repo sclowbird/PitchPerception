@@ -6,7 +6,8 @@
       :options="playLists"
       size="sm"
       class="mb-3"
-      v-on:change="getPlaylistTrackIds"
+      v-on:
+      change="getPlaylistTrackIds"
     ></b-form-select>
     <br />
     <div v-if="audioFeatures.length > 0" style="width:40%; margin:0 auto;">
@@ -25,8 +26,9 @@
       <bars :data="averageAf" :gradient="['#6fa8dc', '#42b983']" :barWidth="40" :growDuration="1"></bars>
     </div>
     <br />
+    <h5>playlistSelection? : {{ playLists }}</h5>
     <br />
-
+    <h2>playlistSelection? : {{ playlistSelection }}</h2>
     <br />
     <h2>Error? : {{ authenticationError }}</h2>
   </div>
@@ -61,7 +63,10 @@ export default {
         3: "acousticness",
         4: "liveness",
         5: "valence"
-      }
+      },
+
+      testObject: [1, 2, 3, 4, 5],
+      testObject2: ["eins", "zwei", "drei", "vier", "fünf"]
     };
   },
   created: function() {
@@ -95,10 +100,12 @@ export default {
       let playlistName = playlistIdentifier[0];
       let playlistId = playlistIdentifier[1];
       let playlistObject = {};
+
       //playlistName.sort();
       playlistId.forEach(
         (element, index) => (playlistObject[element] = playlistName[index])
       );
+
       this.playLists = playlistObject;
     },
 
@@ -158,6 +165,8 @@ export default {
 
       (async () => {
         this.audioFeatures = await a(tracksAudioFeatures);
+        let test = await a(tracksAudioFeatures);
+        console.log(test);
         this.afCopy = await a(tracksAudioFeatures);
         this.averageAf = this.averageAudioFeatures(this.afCopy);
       })();
