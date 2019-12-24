@@ -7,10 +7,18 @@
       size="sm"
       class="mb-3"
       v-on:change="getPlaylistTrackIds"
-    ></b-form-select>
+    >
+      <template v-slot:first>
+        <option :value="null" disabled>Please select a playlist</option>
+      </template>
+    </b-form-select>
     <br />
     <div v-if="audioFeatures.length > 0" style="width:40%; margin:0 auto;">
-      <b-form-select v-model="selectedAf" :options="featureDropDown" size="sm" class="mb-3"></b-form-select>
+      <b-form-select v-model="selectedAf" :options="featureDropDown" size="sm" class="mb-3">
+        <template v-slot:first>
+          <option :value="null" disabled>Please select an audio feature</option>
+        </template>
+      </b-form-select>
       <trend
         v-if="selectedAf !== null"
         :data="audioFeatures[selectedAf].value[0]"
