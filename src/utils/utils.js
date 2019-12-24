@@ -29,20 +29,3 @@ export const dataFilter = (response, wrapper, ...args) => {
   }
   return responseDataArray;
 };
-
-export async function dataFilterAsync(response, wrapper, ...args) {
-  let responseDataArray = [];
-  for (let i = 0; i < args.length; i++) {
-    let tempArr = [];
-    for (let j of response[wrapper]) {
-      if (j !== null) {
-        tempArr.push(j[args[i]]);
-      } else {
-        continue;
-      }
-    }
-    responseDataArray.push(tempArr);
-  }
-
-  return responseDataArray;
-}

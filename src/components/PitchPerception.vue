@@ -6,13 +6,11 @@
       :options="playLists"
       size="sm"
       class="mb-3"
-      v-on:
-      change="getPlaylistTrackIds"
+      v-on:change="getPlaylistTrackIds"
     ></b-form-select>
     <br />
     <div v-if="audioFeatures.length > 0" style="width:40%; margin:0 auto;">
       <b-form-select v-model="selectedAf" :options="allFeatures" size="sm" class="mb-3"></b-form-select>
-
       <trend
         v-if="selectedAf !== null"
         :data="audioFeatures[selectedAf].value[0]"
@@ -26,9 +24,7 @@
       <bars :data="averageAf" :gradient="['#6fa8dc', '#42b983']" :barWidth="40" :growDuration="1"></bars>
     </div>
     <br />
-    <h5>playlistSelection? : {{ playLists }}</h5>
     <br />
-    <h2>playlistSelection? : {{ playlistSelection }}</h2>
     <br />
     <h2>Error? : {{ authenticationError }}</h2>
   </div>
@@ -52,7 +48,6 @@ export default {
       playlistSelection: null,
       playLists: {},
       audioFeatures: [],
-      afCopy: [],
       averageAf: [],
       selectedAf: null,
       oAuthToken: "",
@@ -63,10 +58,7 @@ export default {
         3: "acousticness",
         4: "liveness",
         5: "valence"
-      },
-
-      testObject: [1, 2, 3, 4, 5],
-      testObject2: ["eins", "zwei", "drei", "vier", "fünf"]
+      }
     };
   },
   created: function() {
@@ -100,11 +92,19 @@ export default {
       let playlistName = playlistIdentifier[0];
       let playlistId = playlistIdentifier[1];
       let playlistObject = {};
+      let playlistArray = [];
 
-      //playlistName.sort();
-      playlistId.forEach(
-        (element, index) => (playlistObject[element] = playlistName[index])
-      );
+      for (let i = 0; i < playlistIdentifier[0].length; i++) {
+        let tempObject = {};
+        tempObject["playlistId"] = playlistId[i];
+        tempObject["playlistName"] = playlistName[i];
+        playlistArray.push(tempObject);
+      }
+
+      playlistArray.sort((a, b) => (a.playlistName > b.playlistName ? 1 : -1));
+      playlistArray.forEach((element, index) => {
+        playlistObject[element.playlistId] = element.playlistName;
+      });
 
       this.playLists = playlistObject;
     },
@@ -144,36 +144,31 @@ export default {
     },
 
     playlistAudioFeatures: function(tracksAudioFeatures) {
-      async function a(features) {
-        let af = [
-          { value: [], title: "danceability" },
-          { value: [], title: "energy" },
-          { value: [], title: "speechiness" },
-          { value: [], title: "acousticness" },
-          { value: [], title: "liveness" },
-          { value: [], title: "valence" }
-        ];
-        for (let i = 0; i < af.length; i++) {
-          af[i].value = await dataFilterAsync(
-            features,
-            "audio_features",
-            af[i].title
-          );
-        }
-        return af;
+      let af = [
+        { value: [], title: "danceability" },
+        { value: [], title: "energy" },
+        { value: [], title: "speechiness" },
+        { value: [], title: "acousticness" },
+        { value: [], title: "liveness" },
+        { value: [], title: "valence" }
+      ];
+      for (let i = 0; i < af.length; i++) {
+        af[i].value = dataFilter(
+          tracksAudioFeatures,
+          "audio_features",
+          af[i].title
+        );
       }
 
-      (async () => {
-        this.audioFeatures = await a(tracksAudioFeatures);
-        let test = await a(tracksAudioFeatures);
-        console.log(test);
-        this.afCopy = await a(tracksAudioFeatures);
-        this.averageAf = this.averageAudioFeatures(this.afCopy);
-      })();
+      this.audioFeatures = af;
+
+      //create a deep copy of audioFeatures array
+      let audioFeaturesCopy = JSON.parse(JSON.stringify(this.audioFeatures));
+      this.averageAf = this.displayAverageAudioFeatures(audioFeaturesCopy);
     },
 
     // Calculate average of all audiofeatures
-    averageAudioFeatures: function(af) {
+    displayAverageAudioFeatures: function(af) {
       const reducer = (accumulator, currentValue) => accumulator + currentValue;
       for (let i = 0; i < af.length; i++) {
         length = af[i].value[0].length;
@@ -181,7 +176,6 @@ export default {
         af[i].value /= length;
         af[i].title += " " + round(af[i].value, 2);
       }
-
       // Adds Y-Axis to Bar Chart
       af.unshift({ value: [1], title: "Y-Max-Value = 1" });
       return af;
