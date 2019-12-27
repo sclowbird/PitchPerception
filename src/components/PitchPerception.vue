@@ -18,16 +18,19 @@
           <option :value="null" disabled>Please select an audio feature</option>
         </template>
       </b-form-select>
-      <trend
-        v-if="selectedAf !== null"
-        :data="audioFeatures[selectedAf].value[0]"
-        :gradient="['#6fa8dc', '#42b983', '#2c3e50']"
-        auto-draw
-        smooth
-      ></trend>
+      <div v-if="selectedAf !== null">
+        <p>min / max value of selected audio feature</p>
+        <trend
+          :data="audioFeatures[selectedAf].value[0]"
+          :gradient="['#6fa8dc', '#42b983', '#2c3e50']"
+          auto-draw
+          smooth
+        ></trend>
+      </div>
     </div>
     <br />
     <div v-if="averageAf.length > 0">
+      <p>Average audio features</p>
       <bars :data="averageAf" :gradient="['#6fa8dc', '#42b983']" :barWidth="40" :growDuration="1"></bars>
     </div>
     <br />
@@ -143,6 +146,7 @@ export default {
     },
 
     playlistAudioFeatures: function(tracksAudioFeatures) {
+      // all available audio features are defined in audioFeatureObjects.js
       let af = availableAudioFeatures;
       for (let i = 0; i < af.length; i++) {
         af[i].value = dataFilter(
@@ -161,7 +165,7 @@ export default {
       // create a deep copy of audioFeatures array
       let copyAf = JSON.parse(JSON.stringify(this.audioFeatures));
 
-      // display average features for: danceability, energy, speechiness, acousticness, liveness, valence
+      // display average features for: danceability (0) , energy (1), speechiness (2), acousticness (3), liveness (4), valence (5)
       let displayAverageAf = [];
       for (let i = 0; i < 6; i++) {
         displayAverageAf.push(copyAf[i]);
