@@ -10,8 +10,6 @@ Vue.use(Bars);
 Vue.use(Trend);
 Vue.config.productionTip = false;
 
-console.log(Trend);
-
 new Vue({
   router,
   render: h => h(App)

@@ -13,13 +13,19 @@
     </b-form-select>
     <br />
     <div v-if="audioFeatures.length > 0">
-      <b-form-select v-model="selectedAf" :options="featureDropDown" size="sm" class="mb-3">
+      <b-form-select
+        v-model="selectedAf"
+        :options="featureDropDown"
+        size="sm"
+        class="mb-3"
+        v-on:change="getMinMaxValue"
+      >
         <template v-slot:first>
           <option :value="null" disabled>Please select an audio feature</option>
         </template>
       </b-form-select>
       <div v-if="selectedAf !== null">
-        <p>min / max value of selected audio feature</p>
+        <p>minimum value: {{ selectedAfMinValue }}, maximum value: {{ selectedAfMaxValue }}</p>
         <trend
           :data="audioFeatures[selectedAf].value[0]"
           :gradient="['#6fa8dc', '#42b983', '#2c3e50']"
@@ -60,7 +66,9 @@ export default {
       audioFeatures: [],
       featureDropDown: featureSelection,
       averageAf: [],
-      selectedAf: null
+      selectedAf: null,
+      selectedAfMinValue: 0,
+      selectedAfMaxValue: 0
     };
   },
   created: function() {
@@ -158,33 +166,71 @@ export default {
 
       this.audioFeatures = af;
       this.displayAverageAudioFeatures();
+      this.selectedAfMinValue = this.featureMinValue();
+      this.selectedAfMaxValue = this.featureMaxValue();
     },
 
     // Calculate average of all audiofeatures and provide neccessary data for bar charts
     displayAverageAudioFeatures: function() {
+      // Calculate the average value of all given audio features
+      let calcAverage = this.calculateAverage();
+
+      // Add Y-Axis to Bar Chart visualization with a maximum value of 1
+      const Y_AXIS_MAX_VALUE = 1;
+      calcAverage.unshift({
+        value: [Y_AXIS_MAX_VALUE],
+        title: "Y-Max-Value = 1"
+      });
+
+      // provide data needed for visualization of bar chart
+      this.averageAf = calcAverage;
+    },
+
+    calculateAverage: function() {
       // create a deep copy of audioFeatures array
       let copyAf = JSON.parse(JSON.stringify(this.audioFeatures));
 
-      // display average features for: danceability (0) , energy (1), speechiness (2), acousticness (3), liveness (4), valence (5)
-      let displayAverageAf = [];
-      for (let i = 0; i < 6; i++) {
-        displayAverageAf.push(copyAf[i]);
+      // the here selected features are displayed in the bar chart of the app
+      // calculate average features for: danceability (0) , energy (1), speechiness (2), acousticness (3), liveness (4), valence (5)
+      const SELECTED_AUDIOFEATURES = 6;
+      let selectAverageAf = [];
+      for (let i = 0; i < SELECTED_AUDIOFEATURES; i++) {
+        selectAverageAf.push(copyAf[i]);
       }
 
       // calculate the average for every audio feature
       const reducer = (accumulator, currentValue) => accumulator + currentValue;
-      for (let i = 0; i < displayAverageAf.length; i++) {
-        length = displayAverageAf[i].value[0].length;
-        displayAverageAf[i].value =
-          displayAverageAf[i].value[0].reduce(reducer) / length;
-        displayAverageAf[i].title += " " + round(displayAverageAf[i].value, 2);
+      for (let i = 0; i < selectAverageAf.length; i++) {
+        length = selectAverageAf[i].value[0].length;
+        selectAverageAf[i].value =
+          selectAverageAf[i].value[0].reduce(reducer) / length;
+        selectAverageAf[i].title += " " + round(selectAverageAf[i].value, 2);
       }
 
-      // Adds Y-Axis to Bar Chart
-      displayAverageAf.unshift({ value: [1], title: "Y-Max-Value = 1" });
+      return selectAverageAf;
+    },
 
-      // provide data needed for visualization of bar chart
-      this.averageAf = displayAverageAf;
+    getMinMaxValue: function() {
+      let minValue = this.featureMinValue();
+      let maxValue = this.featureMaxValue();
+    },
+
+    featureMinValue: function() {
+      if (this.selectedAf !== null) {
+        let minVal = Math.min(...this.audioFeatures[this.selectedAf].value[0]);
+        this.selectedAfMinValue = round(minVal, 2);
+      } else {
+        this.selectedAfMinValue = " :minimum value couldn't be identified.";
+      }
+    },
+
+    featureMaxValue: function() {
+      if (this.selectedAf !== null) {
+        let maxVal = Math.max(...this.audioFeatures[this.selectedAf].value[0]);
+        this.selectedAfMaxValue = round(maxVal, 2);
+      } else {
+        this.selectedAfMaxValue = " :maximum value couldn't be identified.";
+      }
     }
   }
 };
