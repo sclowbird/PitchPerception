@@ -1,57 +1,73 @@
 <template>
-  <div style="width:70%; margin:0 auto;">
-    <b-form-select
-      v-model="playlistSelection"
-      :options="playLists"
-      size="sm"
-      class="mb-3"
-      v-on:change="getPlaylistTrackIds"
-    >
-      <template v-slot:first>
-        <option :value="null" disabled>Please select a playlist</option>
-      </template>
-    </b-form-select>
-    <br />
-    <div v-if="audioFeatures.length > 0">
+  <div id="container" style="width:70%; margin:0 auto;">
+    <div id="playlistDropDown">
       <b-form-select
-        v-model="selectedAf"
-        :options="featureDropDown"
+        v-model="playlistSelection"
+        :options="playLists"
         size="sm"
         class="mb-3"
-        v-on:change="getMinMaxValue"
+        v-on:change="getPlaylistTrackIds"
       >
+        <template v-slot:first>
+          <option :value="null" disabled>Please select a playlist</option>
+        </template>
+      </b-form-select>
+    </div>
+    <div id="audioFeatureDropDown" v-if="audioFeatures.length > 0">
+      <b-form-select v-model="selectedAf" :options="featureDropDown" size="sm" class="mb-3">
         <template v-slot:first>
           <option :value="null" disabled>Please select an audio feature</option>
         </template>
       </b-form-select>
-      <div v-if="selectedAf !== null">
-        <p>minimum value: {{ selectedAfMinValue }}, maximum value: {{ selectedAfMaxValue }}</p>
-        <trend
-          :data="audioFeatures[selectedAf].value[0]"
-          :gradient="['#6fa8dc', '#42b983', '#2c3e50']"
-          auto-draw
-          smooth
-        ></trend>
+      <div id="trend-diagram-container" v-if="selectedAf !== null">
+        <div id="min-max-value">
+          <p>
+            <b>minimum: {{ selectedAfMinValue }}</b>
+          </p>
+          <p>
+            <b>maximum: {{ selectedAfMaxValue }}</b>
+          </p>
+        </div>
+        <div id="trend-diagram">
+          <trend
+            :data="audioFeatures[selectedAf].value[0]"
+            :gradient="['#6fa8dc', '#42b983', '#2c3e50']"
+            auto-draw
+            smooth
+          ></trend>
+        </div>
       </div>
     </div>
-    <br />
-    <div v-if="averageAf.length > 0">
-      <p>Average audio features</p>
-      <bars :data="averageAf" :gradient="['#6fa8dc', '#42b983']" :barWidth="40" :growDuration="1"></bars>
+    <div id="bar-diagram-container" v-if="averageAf.length > 0">
+      <div id="average-af-title">
+        <p>
+          <b>Average audio features</b>
+        </p>
+      </div>
+      <div id="bar-diagram">
+        <bars :data="averageAf" :gradient="['#6fa8dc', '#42b983']" :barWidth="40" :growDuration="1"></bars>
+      </div>
     </div>
-    <br />
-    <br />
-    <br />
-    <h2>Error? : {{ authenticationError }}</h2>
+    <h4 v-if="authenticationError !== ''">
+      Sorry! An error ocurred:
+      <br />
+      <font color="red">{{ authenticationError }}</font>
+    </h4>
   </div>
 </template>
 
 <script>
 import router from "../router";
-import { dataFilter, getHashParams, round } from "../utils/utils";
+import {
+  dataFilter,
+  getHashParams,
+  round,
+  millisToMinutesAndSeconds
+} from "../utils/utils";
 import {
   featureSelection,
-  availableAudioFeatures
+  availableAudioFeatures,
+  featureProperties
 } from "../utils/audioFeatureObjects";
 import * as ES from "../services/EventService";
 export default {
@@ -74,6 +90,12 @@ export default {
   created: function() {
     let params = getHashParams();
     this.getAuthToken(params);
+  },
+
+  updated: function() {
+    if (this.selectedAf !== null) {
+      this.getMinMaxValue();
+    }
   },
   methods: {
     getAuthToken: function(params) {
@@ -216,20 +238,34 @@ export default {
     },
 
     featureMinValue: function() {
+      const DURATION_MS = 7;
       if (this.selectedAf !== null) {
         let minVal = Math.min(...this.audioFeatures[this.selectedAf].value[0]);
-        this.selectedAfMinValue = round(minVal, 2);
-      } else {
-        this.selectedAfMinValue = " :minimum value couldn't be identified.";
+        if (this.selectedAf == DURATION_MS) {
+          this.selectedAfMinValue =
+            millisToMinutesAndSeconds(minVal) +
+            " " +
+            featureProperties[this.selectedAf].unit;
+        } else {
+          this.selectedAfMinValue =
+            round(minVal, 2) + " " + featureProperties[this.selectedAf].unit;
+        }
       }
     },
 
     featureMaxValue: function() {
+      const DURATION_MS = 7;
       if (this.selectedAf !== null) {
         let maxVal = Math.max(...this.audioFeatures[this.selectedAf].value[0]);
-        this.selectedAfMaxValue = round(maxVal, 2);
-      } else {
-        this.selectedAfMaxValue = " :maximum value couldn't be identified.";
+        if (this.selectedAf == DURATION_MS) {
+          this.selectedAfMaxValue =
+            millisToMinutesAndSeconds(maxVal) +
+            " " +
+            featureProperties[this.selectedAf].unit;
+        } else {
+          this.selectedAfMaxValue =
+            round(maxVal, 2) + " " + featureProperties[this.selectedAf].unit;
+        }
       }
     }
   }
@@ -251,5 +287,13 @@ li {
 }
 a {
   color: #42b983;
+}
+
+#min-max-value {
+  margin-top: 30px;
+}
+
+#average-af-title {
+  margin-top: 40px;
 }
 </style>

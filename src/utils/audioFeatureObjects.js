@@ -10,12 +10,23 @@ export let availableAudioFeatures = [
   { value: [], title: "duration_ms" }
 ];
 
-const audioFeatureSelection = af => {
+export const featureProperties = [
+  { title: "danceability", unit: "" },
+  { title: "energy", unit: "" },
+  { title: "speechiness", unit: "" },
+  { title: "acousticness", unit: "" },
+  { title: "liveness", unit: "" },
+  { title: "valence", unit: "" },
+  { title: "tempo", unit: "bpm" },
+  { title: "duration", unit: "min" }
+];
+
+const audioFeatureSelection = featureProperties => {
   let features = {};
-  for (let i = 0; i < af.length; i++) {
-    features[i] = af[i].title;
+  for (let i = 0; i < featureProperties.length; i++) {
+    features[i] = featureProperties[i].title;
   }
   return features;
 };
 
-export let featureSelection = audioFeatureSelection(availableAudioFeatures);
+export let featureSelection = audioFeatureSelection(featureProperties);
