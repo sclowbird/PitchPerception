@@ -188,8 +188,6 @@ export default {
 
       this.audioFeatures = af;
       this.displayAverageAudioFeatures();
-      this.selectedAfMinValue = this.featureMinValue();
-      this.selectedAfMaxValue = this.featureMaxValue();
     },
 
     // Calculate average of all audiofeatures and provide neccessary data for bar charts
