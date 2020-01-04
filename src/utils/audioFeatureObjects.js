@@ -30,3 +30,4 @@ const audioFeatureSelection = featureProperties => {
 };
 
 export let featureSelection = audioFeatureSelection(featureProperties);
+console.log(featureSelection);

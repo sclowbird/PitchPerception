@@ -20,6 +20,11 @@
         </template>
       </b-form-select>
       <div id="trend-diagram-container" v-if="selectedAf !== null">
+        <div id="description">
+          <p>
+            <a href="#">What does {{ featureDropDown[selectedAf] }} mean?</a>
+          </p>
+        </div>
         <div id="min-max-value">
           <p>
             <b>minimum: {{ selectedAfMinValue }}</b>
