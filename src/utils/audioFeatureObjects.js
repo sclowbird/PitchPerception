@@ -6,6 +6,7 @@ export let availableAudioFeatures = [
   { value: [], title: "acousticness" },
   { value: [], title: "liveness" },
   { value: [], title: "valence" },
+  { value: [], title: "instrumentalness" },
   { value: [], title: "tempo" },
   { value: [], title: "duration_ms" }
 ];
@@ -17,6 +18,7 @@ export const featureProperties = [
   { title: "acousticness", unit: "" },
   { title: "liveness", unit: "" },
   { title: "valence", unit: "" },
+  { title: "instrumentalness", unit: "" },
   { title: "tempo", unit: "bpm" },
   { title: "duration", unit: "min" }
 ];
@@ -30,4 +32,3 @@ const audioFeatureSelection = featureProperties => {
 };
 
 export let featureSelection = audioFeatureSelection(featureProperties);
-console.log(featureSelection);
