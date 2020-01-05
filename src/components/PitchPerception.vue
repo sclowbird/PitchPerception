@@ -404,6 +404,13 @@ a {
   margin: 0 auto;
 }
 
+@media (max-width: 600px) {
+  #container {
+    width: 95%;
+    margin: 0 auto;
+  }
+}
+
 @media (min-width: 1200px) {
   #container {
     width: 50%;
