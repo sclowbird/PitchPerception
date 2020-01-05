@@ -1,5 +1,5 @@
 <template>
-  <div id="container" style="width:70%; margin:0 auto;">
+  <div id="container">
     <div id="playlistDropDown">
       <b-form-select
         v-model="playlistSelection"
@@ -140,7 +140,7 @@
     <div id="bar-diagram-container" v-if="averageAf.length > 0">
       <div id="average-af-title">
         <p>
-          <b>average</b>
+          <b>average values of all audio features</b>
         </p>
       </div>
       <div id="bar-diagram">
@@ -391,11 +391,42 @@ a {
   color: #42b983;
 }
 
+#playlistDropDown {
+  margin-top: 30px;
+}
+
+#description {
+  margin-top: 10px;
+}
+
+#container {
+  width: 70%;
+  margin: 0 auto;
+}
+
+@media (min-width: 1200px) {
+  #container {
+    width: 50%;
+    margin: 0 auto;
+  }
+}
+
+@media (min-width: 1800px) {
+  #container {
+    width: 40%;
+    margin: 0 auto;
+  }
+}
+
 #min-max-value {
   margin-top: 30px;
 }
 
 #average-af-title {
   margin-top: 40px;
+}
+
+#bar-diagram-container {
+  margin-bottom: 100px;
 }
 </style>

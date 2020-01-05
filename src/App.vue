@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <img style="width:80%; margin:0 auto;" alt="Vue logo" src="./assets/Logo2_PitchPerception.svg" />
+    <img id="pp-logo" alt="Vue logo" src="./assets/Logo2_PitchPerception.svg" />
     <router-view />
   </div>
 </template>
@@ -28,5 +28,24 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+
+#pp-logo {
+  width: 73%;
+  margin: 0 auto;
+}
+
+@media (min-width: 1200px) {
+  #pp-logo {
+    width: 53%;
+    margin: 0 auto;
+  }
+}
+
+@media (min-width: 1800px) {
+  #pp-logo {
+    width: 33%;
+    margin: 0 auto;
+  }
 }
 </style>
