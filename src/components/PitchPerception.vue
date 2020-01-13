@@ -14,30 +14,16 @@
       </b-form-select>
     </div>
     <div id="audioFeatureDropDown" v-if="audioFeatures.length > 0">
-      <b-form-select
-        v-model="selectedAf"
-        :options="featureDropDown"
-        size="sm"
-        class="mb-3"
-      >
+      <b-form-select v-model="selectedAf" :options="featureDropDown" size="sm" class="mb-3">
         <template v-slot:first>
           <option :value="null" disabled>Please select an audio feature</option>
         </template>
       </b-form-select>
       <div id="trend-diagram-container" v-if="selectedAf !== null">
         <div id="description" v-if="featureDropDown[selectedAf] != 'duration'">
-          <b-button v-b-modal.modal-1
-            >What does {{ featureDropDown[selectedAf] }} mean?</b-button
-          >
-          <b-modal
-            hide-footer
-            id="modal-1"
-            :title="featureDropDown[selectedAf]"
-          >
-            <div
-              id="danceability"
-              v-if="featureDropDown[selectedAf] == 'danceability'"
-            >
+          <b-button v-b-modal.modal-1>What does {{ featureDropDown[selectedAf] }} mean?</b-button>
+          <b-modal hide-footer id="modal-1" :title="featureDropDown[selectedAf]">
+            <div id="danceability" v-if="featureDropDown[selectedAf] == 'danceability'">
               <p class="my-4">
                 Danceability describes how suitable a track is for dancing based
                 on a combination of musical elements including tempo, rhythm
@@ -55,10 +41,7 @@
                 perceived loudness, timbre, onset rate, and general entropy.
               </p>
             </div>
-            <div
-              id="speechiness"
-              v-if="featureDropDown[selectedAf] == 'speechiness'"
-            >
+            <div id="speechiness" v-if="featureDropDown[selectedAf] == 'speechiness'">
               <p class="my-4">
                 Speechiness detects the presence of spoken words in a track. The
                 more exclusively speech-like the recording (e.g. talk show,
@@ -71,10 +54,7 @@
                 tracks.
               </p>
             </div>
-            <div
-              id="acousticness"
-              v-if="featureDropDown[selectedAf] == 'acousticness'"
-            >
+            <div id="acousticness" v-if="featureDropDown[selectedAf] == 'acousticness'">
               <p class="my-4">
                 A confidence measure from 0.0 to 1.0 of whether the track is
                 acoustic. 1.0 represents high confidence the track is acoustic.
@@ -96,10 +76,7 @@
                 valence sound more negative (e.g. sad, depressed, angry).
               </p>
             </div>
-            <div
-              id="instrumentalness"
-              v-if="featureDropDown[selectedAf] == 'instrumentalness'"
-            >
+            <div id="instrumentalness" v-if="featureDropDown[selectedAf] == 'instrumentalness'">
               <p class="my-4">
                 Predicts whether a track contains no vocals. “Ooh” and “aah”
                 sounds are treated as instrumental in this context. Rap or
@@ -144,12 +121,7 @@
         </p>
       </div>
       <div id="bar-diagram">
-        <bars
-          :data="averageAf"
-          :gradient="['#6fa8dc', '#42b983']"
-          :barWidth="35"
-          :growDuration="1"
-        ></bars>
+        <bars :data="averageAf" :gradient="['#6fa8dc', '#42b983']" :barWidth="35" :growDuration="1"></bars>
       </div>
     </div>
     <h4 v-if="authenticationError !== ''">
@@ -420,7 +392,7 @@ a {
 
 @media (min-width: 1800px) {
   #container {
-    width: 40%;
+    width: 25%;
     margin: 0 auto;
   }
 }
@@ -435,5 +407,9 @@ a {
 
 #bar-diagram-container {
   margin-bottom: 100px;
+}
+
+.my-4 {
+  color: black;
 }
 </style>
