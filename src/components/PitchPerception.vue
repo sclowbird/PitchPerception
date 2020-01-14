@@ -107,7 +107,7 @@
         <div id="trend-diagram">
           <trend
             :data="audioFeatures[selectedAf].value[0]"
-            :gradient="['#6fa8dc', '#42b983', '#2c3e50']"
+            :gradient="['#7EC1FF', '#51CB68', '#7091BA']"
             auto-draw
             smooth
           ></trend>
@@ -121,7 +121,12 @@
         </p>
       </div>
       <div id="bar-diagram">
-        <bars :data="averageAf" :gradient="['#6fa8dc', '#42b983']" :barWidth="35" :growDuration="1"></bars>
+        <bars
+          :data="averageAf"
+          :gradient="['#7EC1FF','#51CB68', '#7091BA']"
+          :barWidth="35"
+          :growDuration="1"
+        ></bars>
       </div>
     </div>
     <h4 v-if="authenticationError !== ''">
