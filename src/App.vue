@@ -37,6 +37,13 @@ p {
   margin: 0 auto;
 }
 
+@media (max-width: 600px) {
+  #pp-logo {
+    width: 100%;
+    margin: auto;
+  }
+}
+
 @media (min-width: 1200px) {
   #pp-logo {
     width: 32%;
