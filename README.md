@@ -1,29 +1,9 @@
 # pitch-perception
 
-## Project setup
-```
-npm install
-```
+Pitch Perception allows you to see the audio features of your playlists in a beautiful and neat way. 
+Choose a playlist to see its average audio features and a specific
+audio feature to see the flow of all your songs in the playlist.
+Find out if you like your newest Spotify mixes without actually hearing them. 
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Run your tests
-```
-npm run test
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+I use the Spotify API for fetching playlists and audio features.
+Tools used: Spotify Web API, Vue
