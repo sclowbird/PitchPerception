@@ -377,7 +377,7 @@ a {
 }
 
 #container {
-  width: 50%;
+  width: 70%;
   margin: 0 auto;
 }
 
@@ -388,7 +388,7 @@ a {
   }
 }
 
-@media (min-width: 1100px) {
+@media (min-width: 1200px) {
   #container {
     width: 50%;
     margin: 0 auto;
