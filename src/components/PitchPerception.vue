@@ -182,7 +182,7 @@ export default {
     getAuthToken: function(params) {
       let access_token = params.access_token,
         state = params.state,
-        storedState = localStorage.getItem("spotify_auth_state");
+        storedState = sessionStorage.getItem("spotify_auth_state");
       if (access_token && (state == null || state !== storedState)) {
         this.authenticationError = "There was an error during authentication.";
       } else {
